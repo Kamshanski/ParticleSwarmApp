@@ -36,6 +36,11 @@ public class MainActivity extends AppCompatActivity {
     ActivityMainBinding b;
     boolean autoMode = false;
 
+    /**
+     * Handles messagies from calculating thread. Allows to work asynchronously step by step
+     * msg.arg1 - step number
+     * msg.arg2 - step time
+     */
     Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(@NonNull Message msg) {
@@ -86,9 +91,9 @@ public class MainActivity extends AppCompatActivity {
             }
 
             try {
-                msg.recycle(); //it can work in some situations
+                msg.recycle(); // it can work in some situations
             } catch (IllegalStateException e) {
-                handler.removeMessages(msg.what); //if recycle doesnt work we do it manually
+                handler.removeMessages(msg.what); // if recycle doesn't work we do it manually
             }
         }
     };
@@ -110,6 +115,9 @@ public class MainActivity extends AppCompatActivity {
         clear();
     }
 
+    /**
+     * Clears calculations and UI
+     */
     public void clear() {
         estimatorResult = threadCalc.getEstimationResult();
 
@@ -127,7 +135,6 @@ public class MainActivity extends AppCompatActivity {
         showPointsNum(estimatorResult.pointNum);
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -135,15 +142,41 @@ public class MainActivity extends AppCompatActivity {
         b.functionPlane.post(() -> {
             showPoints(0);
             b.functionPlane.findAxes();
-            b.functionPlane.setActualMinimum(U.actualX, U.actualY);
+            b.functionPlane.setOrigin(U.originX, U.originY);
         });
     }
 
 
-    @Override
-    protected void onStop() {
-        super.onStop();
+    /* Convenient view update functions*/
+
+    public void showCoordinates(double x, double y) {
+        b.txX.setText(String.format(TEXT_BEST_X, x));
+        b.txY.setText(String.format(TEXT_BEST_Y, y));
     }
+
+    public void showTime(long st, long ft) {
+        b.txFullTime.setText(String.format(TEXT_FULL_TIME, ft));
+        b.txStepTime.setText(String.format(TEXT_STEP_TIME, st));
+    }
+
+    public void showPoints(int step) {
+        for (int i = 0; i < estimatorResult.pointNum; i++) {
+            double[] coords = estimatorResult.getPointCoordinatesAtStep(step, i);
+            b.functionPlane.updatePoint(i, coords[0], coords[1]);
+        }
+        int bpid = estimatorResult.getBestResult(step).id;
+    }
+
+    public void showProgress(int step) {
+        b.txProgress.setText(String.format(TEXT_PROGRESS, step));
+    }
+
+    public void showPointsNum(int num) {
+        b.txPointsNum.setText(String.format(TEXT_POINTS_NUMBER, num));
+    }
+
+
+    /* Buttons and EditTests listeners */
 
     public void taskClear(View v) {
         threadCalc.postTask(CALC_CLEAR, handler);
@@ -152,7 +185,6 @@ public class MainActivity extends AppCompatActivity {
             focusView.clearFocus();
         }
     }
-
 
     public void taskNextStep(View v) {
         threadCalc.postTask(CALC_STEP, handler);
@@ -173,33 +205,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void debug(View v) {
         U.d("do debug");
-    }
-
-    public void showCoordinates(double x, double y) {
-        b.txX.setText(String.format(TEXT_BEST_X, x));
-        b.txY.setText(String.format(TEXT_BEST_Y, y));
-    }
-
-    public void showTime(long st, long ft) {
-        b.txFullTime.setText(String.format(TEXT_FULL_TIME, ft));
-        b.txStepTime.setText(String.format(TEXT_STEP_TIME, st));
-    }
-
-    public void showPoints(int step) {
-        for (int i = 0; i < estimatorResult.pointNum; i++) {
-            double[] coords = estimatorResult.getPointCoordinatesAtStep(step, i);
-            b.functionPlane.updatePoint(i, coords[0], coords[1]);
-        }
-        int bpid = estimatorResult.getBestResult(step).id;
-//        functionPlane.updateBestPoint(bpid);
-    }
-
-    public void showProgress(int step) {
-        b.txProgress.setText(String.format(TEXT_PROGRESS, step));
-    }
-
-    public void showPointsNum(int num) {
-        b.txPointsNum.setText(String.format(TEXT_POINTS_NUMBER, num));
     }
 
     public void setListeners() {

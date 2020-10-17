@@ -2,6 +2,9 @@ package com.dawan.particleswarmapp.estimatonpack;
 
 import java.util.Random;
 
+/**
+ * Class that implements Particle Swamp algorithm
+ */
 public class Estimator
 {
     public static final int OX = 1;
@@ -34,13 +37,16 @@ public class Estimator
 
         createShuffledPoints();                         //
 
-        xBestTemp = globalBestX;                        // Начальные значения лучшей точки
+        xBestTemp = globalBestX;                        // Best point staring values
         yBestTemp = globalBestY;                        //
         fBestTemp = globalBestFunctionValue;            //
         idBestTemp = globalBestId;
     }
 
-    // Compute a step
+    /**
+     * Compute a step
+     * @return best step result
+     */
     public Answer next() {
         if (step <= maxIterations) {
             if (fBestTemp < globalBestFunctionValue) {
@@ -70,6 +76,9 @@ public class Estimator
         return null;
     }
 
+    /**
+     * Put points in a grid inside constraints
+     */
     public void createShuffledPoints() {
         double dx = (xMax - xMin) / (xN + 1);
         double dy = (yMax - yMin) / (yN + 1);
@@ -93,8 +102,9 @@ public class Estimator
         }
     }
 
-    // Возвращает   double[] {xNew, yNew, xVelNew, yVelNew}, если выход за пределы,
-    //              null, если внутри границ
+    /**
+     * Keeps points inside constraints. (Not working now)
+     */
     private void updatePositionSafely(Point p) {
         double xOld = p.x;
         double yOld = p.y;
@@ -137,6 +147,9 @@ public class Estimator
 //        p.y = intersection[1];
     }
 
+    /**
+     * Finds intersection between point trajectory and constraints lines. (Not working now)
+     */
     private double[] getIntersectionWith(double x1, double y1, double x2, double y2, int axe, double k) {
         double[] intersection;
         double u = 0.0d;
@@ -152,10 +165,6 @@ public class Estimator
 
     public boolean isFinished() {
         return step >= maxIterations;
-    }
-
-    public void setF(Function f) {
-
     }
 
     public int getStep() {
@@ -174,6 +183,9 @@ public class Estimator
         return globalBestId;
     }
 
+    /**
+     * Just a structure to hold best answer, id and time of cycle
+     */
     public static class Answer {
         double x, y, z;
         public long time;

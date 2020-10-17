@@ -4,17 +4,17 @@ import java.util.Random;
 
 // Добавить макс и мин значения для коэффициентов
 
+/**
+ * Class for a point of swamp. It comprises coordinates, velocity, random behavior coefficients and local memory.
+ */
 public class Point {
     double x, y;
     double xVel = 0.0, yVel = 0.0;
     double xBestLocal =.0, yBestLocal =.0, fBestLocal = .0;
     double functionValue=.0;
-    double Cin;
-    double Ccog;
-    double Csoc;
-
-    public Point() {
-    }
+    double Cin;                 // Main coefficients, that defines algorithm behavior
+    double Ccog;                //
+    double Csoc;                //
 
     public Point(double x, double y, Random U) {
         this.x = x;
@@ -29,7 +29,7 @@ public class Point {
     }
 
     public double[] updatePosition(double xGlobalBest, double yGlobalBest) {
-        xVel = Cin*xVel + Ccog*(xBestLocal - x) + Csoc*(xGlobalBest - x);
+        xVel = Cin*xVel + Ccog*(xBestLocal - x) + Csoc*(xGlobalBest - x);   // Main formula of the algorithm update
         yVel = Cin*yVel + Ccog*(yBestLocal - y) + Csoc*(yGlobalBest - y);
 
         x = x + xVel;

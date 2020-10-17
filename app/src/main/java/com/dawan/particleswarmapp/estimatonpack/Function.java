@@ -5,6 +5,9 @@ import com.dawan.particleswarmapp.U;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
+/**
+ * Wrapper for Expression class with only X and Y variables and safe instance obtaining.
+ */
 public class Function {
     private Expression expression;
     private static final String X = "x";

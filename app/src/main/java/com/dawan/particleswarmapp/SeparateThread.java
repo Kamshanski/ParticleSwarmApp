@@ -4,6 +4,8 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 
+import androidx.annotation.NonNull;
+
 import com.dawan.particleswarmapp.estimatonpack.Estimator;
 import com.dawan.particleswarmapp.estimatonpack.EstimatorResult;
 import com.dawan.particleswarmapp.estimatonpack.Point;
@@ -14,6 +16,9 @@ import static com.dawan.particleswarmapp.MainActivity.CALC_CLEAR;
 import static com.dawan.particleswarmapp.MainActivity.CALC_FINISHED;
 import static com.dawan.particleswarmapp.MainActivity.CALC_STEP;
 
+/**
+ * Just a class for doing all calculation and recording stuff.
+ */
 public class SeparateThread extends HandlerThread
 {
     private Handler calcHandler;
@@ -114,7 +119,7 @@ public class SeparateThread extends HandlerThread
         return estimationResult;
     }
 
-    public void saveStepResults(int step, Point[] points, int id, long time) {
+    public void saveStepResults(int step, @NonNull Point[] points, int id, long time) {
         estimationResult.putAnalysis(step, id, time);      // Save best point ID and computation time of step-th step
 
         for (int i = 0; i < points.length; i++) {           // Save states of all point at step-th step

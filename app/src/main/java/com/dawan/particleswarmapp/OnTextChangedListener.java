@@ -3,6 +3,9 @@ package com.dawan.particleswarmapp;
 import android.text.Editable;
 import android.text.TextWatcher;
 
+/**
+ * Custom listener to avoid a lot of empty code in View code
+ */
 abstract class OnTextChangedListener implements TextWatcher {
     public OnTextChangedListener() {
     }

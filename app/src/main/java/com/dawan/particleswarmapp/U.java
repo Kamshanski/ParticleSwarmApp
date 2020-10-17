@@ -5,9 +5,12 @@ import android.util.Log;
 
 import java.util.GregorianCalendar;
 
+/**
+ * Utilities class
+ */
 public class U {
     public static final String formula = "(x-2)^2+(y-2)^2";
-    public static final double actualX = 0, actualY = 0;
+    public static final double originX = 0, originY = 0;
     public static final int maxIter = 70;
     public static final int[] pointsGrid = {5, 4};
     public static final double maxX = 5.0;

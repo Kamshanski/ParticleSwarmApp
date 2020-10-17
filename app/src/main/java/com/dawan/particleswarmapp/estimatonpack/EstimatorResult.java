@@ -1,5 +1,8 @@
 package com.dawan.particleswarmapp.estimatonpack;
 
+/**
+ * Just keeps results of each step. Useful for async estimations
+ */
 public class EstimatorResult {
     public static final int X = 0;
     public static final int Y = 1;

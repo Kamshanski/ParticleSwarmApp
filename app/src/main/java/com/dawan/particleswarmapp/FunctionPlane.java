@@ -10,19 +10,19 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Special layout that allows to represents inner algorithm process.
+ */
 public class FunctionPlane extends ConstraintLayout {
     List<PointView> pointViews = new ArrayList<>();
     View axeX, axeY;
     int pointsNum;
-    int bestPointViewId = -1;
     double maxX = 5.0;
     double minX = -5.0;
     double maxY = 5.0;
     double minY = -5.0;
     double kX, muY, kY, muX;               // Scaling factor and bias
     double w, h;
-    int marginX;
-    int marginY;
     public FunctionPlane(Context context) {
         super(context);
     }
@@ -38,6 +38,10 @@ public class FunctionPlane extends ConstraintLayout {
         axeY = findViewById(R.id.axeY);
     }
 
+    /**
+     * Add of delete points according to new {@param pointsNum}
+     * @param pointsNum New points Number
+     */
     public void preparePoints(int pointsNum) {
         this.pointsNum = pointsNum;
 
@@ -65,34 +69,29 @@ public class FunctionPlane extends ConstraintLayout {
         }
     }
 
-    public void updateBestPoint(int id) {       // Не имеет смысла, т.к показкает точку давшую глобальные значения
-        if (id != bestPointViewId && valid(id)) {
-            if (bestPointViewId != -1)
-                pointViews.get(bestPointViewId).undoBest();
-            bestPointViewId = id;
-            pointViews.get(id).doBest();
-        }
-    }
-
-    public void setActualMinimum(double actualX, double actualY) {
+    /**
+     * Set axes origin to (0,0) or (originX, originY)
+     * @param originX x0
+     * @param originY y0
+     */
+    public void setOrigin(double originX, double originY) {
         if (axeX.getLayoutParams() instanceof ViewGroup.MarginLayoutParams
                 && axeY.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams pX = (ViewGroup.MarginLayoutParams) axeX.getLayoutParams();
             ViewGroup.MarginLayoutParams pY = (ViewGroup.MarginLayoutParams) axeY.getLayoutParams();
-            pX.setMargins(0, scaledY(actualY), 0, 0);
-            pY.setMargins(scaledX(actualX), 0, 0, 0);
+            pX.setMargins(0, scaledY(originY), 0, 0);
+            pY.setMargins(scaledX(originX), 0, 0, 0);
             axeX.requestLayout();
             axeY.requestLayout();
         }
     }
 
     public void setCustomAxes(double maxX, double minX, double maxY,double minY) {
-        this.maxX = maxX;
-        this.minX = minX;
-        this.maxY = maxY;
-        this.minY = minY;
+        setMaxX(maxX);
+        setMinX(minX);
+        setMaxY(maxY);
+        setMinY(minY);
     }
-
 
     public void setMaxX(double maxX) {
         this.maxX = maxX;
@@ -110,9 +109,20 @@ public class FunctionPlane extends ConstraintLayout {
         this.minY = minY;
     }
 
+    /**
+     * transformation of Estimation coordinate <param>x</param> to Layout coordinates
+     * @param x Estimation coordinate
+     * @return Layout coordinate
+     */
     public int scaledX(double x) {
         return (int) (x*kX + muX);
     }
+
+    /**
+     * transformation of Estimation coordinate <param>y</param> to Layout coordinates
+     * @param y Estimation coordinate
+     * @return Layout coordinate
+     */
     public int scaledY(double y) {
         return (int) (y*kY + muY);
     }
@@ -129,6 +139,9 @@ public class FunctionPlane extends ConstraintLayout {
         super.onSizeChanged(w, h, oldw, oldh);
     }
 
+    /**
+     * Computations of coefficients for transformation from Estimation coordinates to Layout coordinates
+     */
     public void updateProportions() {
         double dx = maxX - minX;
         double dy = maxY - minY;
@@ -140,7 +153,7 @@ public class FunctionPlane extends ConstraintLayout {
         this.muY = (minY / dy + 1) * h;
 
         if (axeX != null && axeY != null) {
-            setActualMinimum(U.actualX, U.actualY);
+            setOrigin(U.originX, U.originY);
         }
     }
 }

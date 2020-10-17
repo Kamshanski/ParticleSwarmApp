@@ -8,12 +8,12 @@ import android.view.ViewGroup;
 import java.lang.reflect.Constructor;
 import java.util.Random;
 
+/**
+ * Square block represents a point of algorithm swamp
+ */
 public class PointView extends View
 {
-    public static final int bestSize = 9, ordinarySize = 4;
-
     int id;
-    float _x, _y;                       // DELETE !!!!!
 
     public PointView(Context context, int id) {
         super(context);
@@ -27,18 +27,9 @@ public class PointView extends View
     public void setNewLayout(int x, int y) {
         setX(x);
         setY(y);
-        _x = getX();
-        _y = getY();
     }
 
-    public void doBest() {
-        resizeView(bestSize, bestSize);
-    }
-
-    public void undoBest() {
-        resizeView(ordinarySize, ordinarySize);
-    }
-
+    // maybe in future implement emphasizing with size of point
     private void resizeView(int newWidth, int newHeight) {
         try {
             Constructor<? extends ViewGroup.LayoutParams> ctor = getLayoutParams().getClass().getDeclaredConstructor(int.class, int.class);
